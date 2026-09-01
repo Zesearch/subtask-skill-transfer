@@ -545,10 +545,8 @@ section.in .sep i{transform:scaleX(1)}
   border: 0;
 }
 
-/* one measure per role: the caption lines run wide so the card stays short,
-   the takeaway keeps a prose measure because it is read as a sentence */
-.ch-sub, .ch-note { max-width: 128ch; }
-.ch-take { max-width: 104ch; }
+/* every line runs the full card width so the text block lines up with the plot */
+.ch-sub, .ch-note, .ch-take { max-width: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .ch-mark { transition: none; }
@@ -777,15 +775,28 @@ section.in .sep i{transform:scaleX(1)}
 .sechead{display:grid; gap:var(--sp-3) var(--sp-6); grid-template-columns:minmax(0,1fr); align-items:end}
 @media (min-width:1000px){.sechead{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 .sechead .lede{margin-top:0}
+.deck{position:relative}
 .track{
-  display:grid; grid-auto-flow:column; grid-auto-columns:min(100%, 70rem);
-  gap:var(--sp-4); overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
-  padding-bottom:var(--sp-2); scrollbar-width:thin;
+  display:grid; grid-auto-flow:column; grid-auto-columns:100%;
+  overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
+  scrollbar-width:none; align-items:start;
 }
+.track::-webkit-scrollbar{display:none}
+/* one chart per view; the deckbar above it carries the arrows, so nothing
+   floats over the plot and steals the cell hover */
 .track > *{scroll-snap-align:center; min-width:0}
-.track svg{max-height:40svh; height:auto; width:100%}
+.deck-view{position:relative}
+/* the plot takes what the card's own chrome leaves, not a flat share of the
+   viewport: above 860px the takeaway line comes back and a flat 40svh pushed
+   the card past the fold on ~900px-tall screens */
+.track svg{max-height:max(30svh, min(40svh, calc(100svh - 625px))); height:auto; width:100%}
 .deckbar{display:flex; align-items:center; gap:var(--sp-2); margin-top:var(--sp-2)}
-.deckbar .hint{font-size:var(--f-xs); color:var(--muted); margin-left:auto; letter-spacing:.04em}
+.deckbar .hint{
+  margin-left:auto; font-family:var(--serif); font-size:var(--f-sm); letter-spacing:.04em;
+  color:var(--ink-strong); background:var(--card); border:1px solid var(--rule);
+  border-radius:100px; padding:.26rem .85rem; cursor:pointer; font-variant-numeric:tabular-nums;
+}
+.deckbar .hint:hover{border-color:var(--ink-strong)}
 .dots{display:flex; gap:.45rem}
 .dot{width:9px; height:9px; padding:0; border-radius:50%; border:1px solid var(--rule); background:transparent; cursor:pointer}
 .dot[aria-current="true"]{background:var(--ink-strong); border-color:var(--ink-strong)}
@@ -858,7 +869,7 @@ footer{padding:var(--sp-6) 0 var(--sp-7); border-top:1px solid var(--rule-soft);
 .ch-note{font-size:13px !important; line-height:1.4 !important}
 .ch-take{margin-top:.55rem !important; padding-top:.45rem !important; line-height:1.32 !important}
 .ch-legend{margin-top:.4rem !important}
-#ch-transfer svg{max-height:42svh}
+#ch-transfer svg{max-height:max(30svh, min(42svh, calc(100svh - 610px)))}
 </style><style>
 /* label + heading on the left, the block's own text or figure on the right,
    tops flush with the label and bottoms flush with the heading */
@@ -893,6 +904,15 @@ footer{padding:var(--sp-6) 0 var(--sp-7); border-top:1px solid var(--rule-soft);
   padding:.2rem .6rem; border-radius:2px; margin:0 0 clamp(.5rem, 1.4svh, 1rem);
 }
 .metric-list{margin:0; display:grid; gap:.45rem}
+@media (min-width:700px){
+  /* the two dimensions sit side by side so the card stays a strip, not a column */
+  .metric-list{grid-template-columns:1fr 1fr; gap:.35rem var(--sp-4)}
+  .metric-list div{grid-template-columns:minmax(0,1fr); gap:.05rem}
+}
+@media (min-width:700px){
+  .metric-list{grid-template-columns:1fr 1fr; gap:.4rem var(--sp-4)}
+  .metric-list div{grid-template-columns:minmax(0,1fr); gap:.1rem}
+}
 .metric-list div{display:grid; grid-template-columns:auto minmax(0,1fr); gap:.5rem; align-items:baseline}
 .metric-list dt{font-weight:700; color:var(--ink-strong); white-space:nowrap}
 .metric-list dd{margin:0; color:var(--ink); font-size:var(--f-sm); min-width:0; overflow-wrap:break-word}
@@ -965,6 +985,38 @@ section, .hero{scroll-margin-top:0}
 /* a laptop screen is short: trim the chart card's chrome rather than the plot,
    so the drawing keeps its size and the section still lands in one screen */
 @media (max-height: 860px){
+  /* the hero carries the abstract as well, so both give a little on a laptop screen */
+  .heroart svg{max-height:25svh}
+  .abstract p{font-size:var(--f-xs); line-height:1.5}
+  .abswrap .seclabel{margin-bottom:.35rem}
+  .metric-note{font-size:var(--f-xs)}
+  .track svg{max-height:33svh}
+  #ch-transfer svg{max-height:33svh}
+  /* the Why card and the chart head each give back a little so the section lands in one screen */
+  .metricbox{padding:.8rem 1rem}
+  .metric-eyebrow{margin-bottom:.35rem; padding:.15rem .5rem}
+  .metric-list{gap:.25rem .9rem}
+  .metric-eq{margin-top:.4rem; padding-top:.4rem; font-size:var(--f-sm)}
+  .metric-note{margin-top:.3rem; line-height:1.4}
+  .ch-head{margin-bottom:.2rem}
+  .ch-sub{line-height:1.35}
+  .deckbar{margin-bottom:.3rem}
+  .heroart svg{max-height:28svh}
+  .motivfig svg{max-height:30svh}
+  .herogrid{gap:var(--sp-4)}
+  .hero h1{font-size:clamp(1.7rem, 3vw, 2.2rem)}
+  .abstract{padding:var(--sp-3) var(--sp-4)}
+  .tldr{font-size:var(--f-sm)}
+  .quote{font-size:var(--f-sm); line-height:1.5}
+  .card h3{font-size:var(--f-base)}
+  /* on a laptop screen the card's own takeaway repeats the section takeaway,
+     and the plot gives back the rest of the height the section needs */
+  .ch-take{display:none}
+  .track svg{max-height:34svh}
+  #ch-transfer svg{max-height:34svh}
+  .metric-eyebrow{margin-bottom:.45rem}
+  .metric-eq{margin-top:.5rem; padding-top:.5rem}
+  .metric-note{margin-top:.4rem}
   /* trimming the plot buys almost no height and costs a lot of legibility
      (15% smaller charts bought 0.05 of a screen), so only the decorative art shrinks */
   .heroart svg{max-height:32svh}
@@ -989,6 +1041,55 @@ section, .hero{scroll-margin-top:0}
   .metric-list dd{font-size:var(--f-xs)}
 }
 </style><style>
+/* final short-screen pass, appended so it wins over the earlier values in the same band */
+@media (max-height: 860px){
+  .heroart svg{max-height:25svh}
+  .abstract p{font-size:var(--f-xs); line-height:1.5}
+  .abswrap .seclabel{margin-bottom:.35rem}
+  .metric-note{font-size:var(--f-xs)}
+  .track svg{max-height:33svh}
+  #ch-transfer svg{max-height:33svh}
+  .motivfig svg{max-height:29svh}
+}
+</style>
+<style>
+/* the Why metric card is wide and short so the chart under it keeps its room */
+@media (min-width:960px){
+  .sec2.why2{grid-template-columns:minmax(0,.58fr) minmax(0,1.42fr)}
+}
+.metric-top{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:.6rem var(--sp-4);
+  padding-bottom:.45rem; border-bottom:1px solid var(--rule); margin-bottom:.5rem;
+}
+.metric-top .metric-eyebrow{margin:0}
+.metric-top .metric-eq{margin:0; padding:0; border:0; white-space:nowrap}
+.metricbox .metric-note{margin-top:.4rem}
+@media (min-width:960px){
+  .metric-list{grid-template-columns:1fr 1fr; gap:.25rem var(--sp-5)}
+  .metric-list div{grid-template-columns:auto minmax(0,1fr); gap:.4rem; align-items:baseline}
+}
+</style>
+<style>
+/* the Results takeaway reads wider and shorter for the same reason as the Why card */
+@media (min-width:960px){
+  .sec2.res2{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)}
+}
+</style>
+<style>
+/* below this height the chart subtitle is what stands between the plot and the fold */
+@media (max-height: 800px){
+  .ch-sub{display:none}
+  .ch-head{margin-bottom:.15rem}
+}
+</style>
+<style>
+/* the shortest laptops need a last few pixels back from the plot */
+@media (max-height: 770px){
+  .track svg{max-height:29svh}
+  #ch-transfer svg{max-height:29svh}
+}
+</style>
+<style>
 .mfig-root{display:block; width:100%; height:auto; font-family:var(--serif,Palatino,"Palatino Linotype",Georgia,serif)}
 .mfig-root text{fill:var(--ink,#586e75)}
 .mfig-h{font-size:18.3px; font-weight:700; fill:var(--ink-strong,#073642)}
@@ -1074,8 +1175,7 @@ section, .hero{scroll-margin-top:0}
     <p class="seclabel rv"><span class="n">01</span> Abstract</p>
     <div class="abstract rv">
       <p>Large language model (LLM) agents can induce skills from completed tasks and reuse them later to grow more capable with experience. In practice, induced skills may transfer unreliably and can even harm the agent that retrieves them. When agent-induced skills transfer reliably across tasks remains an open question. We conduct a comprehensive and controlled study of how the way skills are induced shapes their transfer across tasks. Specifically, we compare task-level with subtask-level skill induction and text with code skill formats, the two axes along which existing methods differ. Task-level skills mostly reduce the agent's performance below its no-memory baseline while subtask-level skills raise it above on average, and text skills transfer better than code skills. To further understand our findings, we examine two complementary properties of the induced skills: <i>specificity</i>, which measures how closely a skill matches real tasks, and <i>abstractness</i>, which measures how evenly its relevance spreads across tasks. Neither property alone predicts task success, but their combined effect does, which we propose as a <i>skill utility</i> score. The score correlates consistently with task success when skills are transferred, and subtask-level and text skills score higher. Computing skill utility only needs the skills and task descriptions but not any task execution, so our score serves as a practical diagnostic of a skill memory before any new task runs.</p>
-    </div>
-    </div>
+  </div>
 </header>
 
 <section id="motivation">
@@ -1400,7 +1500,7 @@ section, .hero{scroll-margin-top:0}
 <section id="helps">
   <div class="sep"><i></i></div>
   <div class="wrap">
-    <div class="sec2 rv">
+    <div class="sec2 res2 rv">
       <div class="sec2-l">
         <p class="seclabel"><span class="n">03</span> Results</p>
         <h2>Induction level and format decide whether a skill helps</h2>
@@ -1408,16 +1508,18 @@ section, .hero{scroll-margin-top:0}
       <div class="sec2-r takebox"><p class="lede">Task-level skills mostly reduce the agent's performance below its no-memory baseline while subtask-level skills raise it above on average, and text skills transfer better than code skills.</p></div>
     </div>
 <div class="deck rv">
-  <div class="track" id="deck-helps" tabindex="0" role="group" aria-label="Results: what a skill memory does. Scroll sideways or use the arrow keys.">
-<div id="ch-effect"></div>
-<div id="ch-difficulty"></div>
-<div id="ch-budget"></div>
-  </div>
   <div class="deckbar">
     <button class="nav-arrow" type="button" data-dir="-1" aria-label="Previous chart">&#8249;</button>
     <button class="nav-arrow" type="button" data-dir="1" aria-label="Next chart">&#8250;</button>
     <div class="dots"><button class="dot" type="button" aria-label="Chart 1" aria-current="true"></button><button class="dot" type="button" aria-label="Chart 2"></button><button class="dot" type="button" aria-label="Chart 3"></button></div>
-    <button class="hint" type="button">Scroll sideways &#8594; 3 more</button>
+    <button class="hint" type="button">1 / 3 &#8594;</button>
+  </div>
+  <div class="deck-view">
+    <div class="track" id="deck-helps" tabindex="0" role="group" aria-label="Results: what a skill memory does. One chart at a time; scroll sideways or use the arrow keys.">
+<div id="ch-effect"></div>
+<div id="ch-difficulty"></div>
+<div id="ch-budget"></div>
+    </div>
   </div>
 </div>
   </div>
@@ -1426,34 +1528,38 @@ section, .hero{scroll-margin-top:0}
 <section id="transfer">
   <div class="sep"><i></i></div>
   <div class="wrap">
-    <div class="sec2 rv">
+    <div class="sec2 why2 rv">
       <div class="sec2-l">
         <p class="seclabel"><span class="n">04</span> Why</p>
         <h2>When do skills transfer</h2>
       </div>
       <div class="sec2-r takebox metricbox">
         <div>
-          <p class="metric-eyebrow">Our proposed metric</p>
+          <div class="metric-top">
+            <p class="metric-eyebrow">Our proposed metric</p>
+            <p class="metric-eq"><b>Skill utility</b> <span>=</span> specificity <span>&times;</span> abstractness</p>
+          </div>
           <dl class="metric-list">
             <div><dt>Specificity</dt><dd>how close a skill is to the tasks it most resembles</dd></div>
             <div><dt>Abstractness</dt><dd>how evenly its relevance spreads over many tasks</dd></div>
           </dl>
-          <p class="metric-eq"><b>Skill utility</b> <span>=</span> specificity <span>&times;</span> abstractness</p>
-          <p class="metric-note">Computed from the induced skills and task descriptions alone, with no task execution, and it predicts task success for both agents.</p>
+          <p class="metric-note">Computed from the skills and task descriptions alone, with no task execution, and it predicts task success.</p>
         </div>
       </div>
     </div>
 <div class="deck rv">
-  <div class="track" id="deck-transfer" tabindex="0" role="group" aria-label="Results: when skills transfer. Scroll sideways or use the arrow keys.">
-<div id="ch-utility"></div>
-<div id="ch-medians"></div>
-<div id="ch-transfer"></div>
-  </div>
   <div class="deckbar">
     <button class="nav-arrow" type="button" data-dir="-1" aria-label="Previous chart">&#8249;</button>
     <button class="nav-arrow" type="button" data-dir="1" aria-label="Next chart">&#8250;</button>
     <div class="dots"><button class="dot" type="button" aria-label="Chart 1" aria-current="true"></button><button class="dot" type="button" aria-label="Chart 2"></button><button class="dot" type="button" aria-label="Chart 3"></button></div>
-    <button class="hint" type="button">Scroll sideways &#8594; 3 more</button>
+    <button class="hint" type="button">1 / 3 &#8594;</button>
+  </div>
+  <div class="deck-view">
+    <div class="track" id="deck-transfer" tabindex="0" role="group" aria-label="Results: when skills transfer. One chart at a time; scroll sideways or use the arrow keys.">
+<div id="ch-utility"></div>
+<div id="ch-medians"></div>
+<div id="ch-transfer"></div>
+    </div>
   </div>
 </div>
   </div>
@@ -2086,6 +2192,24 @@ def place_order_with_valid_payment(access_token, address_id):
     if (r.value != null) row.appendChild(E('span', 'ch-tip-val', r.value));
     return row;
   }
+  /* A max-height cap letterboxes the viewBox inside the svg element box, so
+     the drawn content is neither full width nor flush left. The element's own
+     CTM is the only mapping that stays right under every cap. */
+  function toClient(svg, x, y) {
+    var m = svg.getScreenCTM && svg.getScreenCTM();
+    if (!m) return null;
+    var p = svg.createSVGPoint();
+    p.x = x; p.y = y;
+    return p.matrixTransform(m);
+  }
+  function toView(svg, cx, cy) {
+    var m = svg.getScreenCTM && svg.getScreenCTM();
+    if (!m) return null;
+    var p = svg.createSVGPoint();
+    p.x = cx; p.y = cy;
+    return p.matrixTransform(m.inverse());
+  }
+
   function showTip(c, x, y, spec) {
     var tip = c.tip, i;
     clear(tip);
@@ -2097,8 +2221,16 @@ def place_order_with_valid_payment(access_token, address_id):
     if (spec.note) tip.appendChild(E('div', 'ch-tip-note', spec.note));
     tip.hidden = false;
     var W = c.fig.clientWidth || figWidth(c);
-    var scale = W ? W / (c.vbW || W) : 1;
-    var px = x * scale, py = y * scale;
+    var px, py;
+    var anchor = c.svg && toClient(c.svg, x, y);
+    if (anchor) {
+      var fb = c.fig.getBoundingClientRect();
+      px = anchor.x - fb.left;
+      py = anchor.y - fb.top;
+    } else {
+      var scale = W ? W / (c.vbW || W) : 1;
+      px = x * scale; py = y * scale;
+    }
     var tw = tip.offsetWidth || 170, th = tip.offsetHeight || 60;
     var left = px + 16;
     if (left + tw > W - 4) left = px - tw - 16;
@@ -2214,10 +2346,10 @@ def place_order_with_valid_payment(access_token, address_id):
       dots.style.display = 'none';
       hideTip(c);
     }
-    function nearest(clientX) {
-      var box = svg.getBoundingClientRect();
-      if (!box.width) return 0;
-      var sx = (clientX - box.left) * (plot.vbW / box.width);
+    function nearest(clientX, clientY) {
+      var p = toView(svg, clientX, clientY);
+      if (!p) return 0;
+      var sx = p.x;
       var best = 0, bd = Infinity;
       for (var i = 0; i < xs.length; i++) {
         var d = Math.abs(xs[i] - sx);
@@ -2225,7 +2357,7 @@ def place_order_with_valid_payment(access_token, address_id):
       }
       return best;
     }
-    overlay.addEventListener('pointermove', function (ev) { place(nearest(ev.clientX)); });
+    overlay.addEventListener('pointermove', function (ev) { place(nearest(ev.clientX, ev.clientY)); });
     overlay.addEventListener('pointerleave', off);
     svg.addEventListener('keydown', function (ev) {
       var k = ev.key, i = c.focus, n = xs.length;
@@ -2258,11 +2390,9 @@ def place_order_with_valid_payment(access_token, address_id):
         class: 'ch-hit', x: r2(p.x), y: r2(p.y), width: r2(p.size), height: r2(p.size)
       });
       ov.addEventListener('pointermove', function (ev) {
-        var box = svg.getBoundingClientRect();
-        if (!box.width) return;
-        var k = p.vbW / box.width;
-        var vx = (ev.clientX - box.left) * k, vy = (ev.clientY - box.top) * k;
-        var i = p.index(vx, vy);
+        var pt = toView(svg, ev.clientX, ev.clientY);
+        if (!pt) return;
+        var i = p.index(pt.x, pt.y);
         if (i != null) show(i, false); else off();
       });
       ov.addEventListener('pointerleave', off);
@@ -4824,6 +4954,8 @@ def place_order_with_valid_payment(access_token, address_id):
     var dots = [].slice.call(deck.querySelectorAll(".dot"));
     var prev = deck.querySelector('.nav-arrow[data-dir="-1"]');
     var next = deck.querySelector('.nav-arrow[data-dir="1"]');
+    var sidePrev = deck.querySelector('.deck-side.prev');
+    var sideNext = deck.querySelector('.deck-side.next');
 
     function current(){
       var tr = track.getBoundingClientRect(), c = tr.left + tr.width / 2, best = 0, bd = Infinity;
@@ -4841,13 +4973,19 @@ def place_order_with_valid_payment(access_token, address_id):
     function sync(){
       var i = current();
       dots.forEach(function(d, k){ d.setAttribute("aria-current", k === i ? "true" : "false"); });
-      if (prev) prev.disabled = track.scrollLeft <= 2;
-      if (next) next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+      /* index, not scrollLeft: sync() first runs before the charts mount, when
+         the track has nothing to scroll and a width test would latch both
+         arrows off for good */
+      if (prev) prev.disabled = i <= 0;
+      if (next) next.disabled = i >= slides.length - 1;
+      if (sidePrev) sidePrev.disabled = i <= 0;
+      if (sideNext) sideNext.disabled = i >= slides.length - 1;
       if (hint){
-        var left = slides.length - 1 - i;
-        hint.textContent = left > 0
-          ? "Scroll sideways \u2192 " + left + " more"
-          : "\u21ba Back to the first";
+        hint.textContent = i < slides.length - 1
+          ? (i + 1) + " / " + slides.length + " \u2192"
+          : (i + 1) + " / " + slides.length + " \u21ba";
+        hint.setAttribute("aria-label", "Chart " + (i + 1) + " of " + slides.length +
+          (i < slides.length - 1 ? ", show the next one" : ", back to the first"));
       }
     }
     var hint = deck.querySelector(".hint");
@@ -4858,6 +4996,8 @@ def place_order_with_valid_payment(access_token, address_id):
     });
     if (prev) prev.addEventListener("click", function(){ go(current() - 1); });
     if (next) next.addEventListener("click", function(){ go(current() + 1); });
+    if (sidePrev) sidePrev.addEventListener("click", function(){ go(current() - 1); });
+    if (sideNext) sideNext.addEventListener("click", function(){ go(current() + 1); });
     var tick = null;
     track.addEventListener("scroll", function(){
       if (tick) return;
@@ -4869,6 +5009,8 @@ def place_order_with_valid_payment(access_token, address_id):
     });
     sync();
     window.addEventListener("resize", sync);
+    /* the charts mount after this runs and change the track geometry */
+    if (window.ResizeObserver) new ResizeObserver(sync).observe(track);
   });
 
   /* hero task stream: arcs from an earlier task to a later one */
