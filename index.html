@@ -789,7 +789,7 @@ section.in .sep i{transform:scaleX(1)}
 /* the plot takes what the card's own chrome leaves, not a flat share of the
    viewport: above 860px the takeaway line comes back and a flat 40svh pushed
    the card past the fold on ~900px-tall screens */
-.track svg{max-height:max(30svh, min(40svh, calc(100svh - 625px))); height:auto; width:100%}
+.track svg{max-height:max(28svh, min(40svh, calc(100svh - 655px))); height:auto; width:100%}
 .deckbar{display:flex; align-items:center; gap:var(--sp-2); margin-top:var(--sp-2)}
 .deckbar .hint{
   margin-left:auto; font-family:var(--serif); font-size:var(--f-sm); letter-spacing:.04em;
@@ -869,7 +869,7 @@ footer{padding:var(--sp-6) 0 var(--sp-7); border-top:1px solid var(--rule-soft);
 .ch-note{font-size:13px !important; line-height:1.4 !important}
 .ch-take{margin-top:.55rem !important; padding-top:.45rem !important; line-height:1.32 !important}
 .ch-legend{margin-top:.4rem !important}
-#ch-transfer svg{max-height:max(30svh, min(42svh, calc(100svh - 610px)))}
+#ch-transfer svg{max-height:max(28svh, min(42svh, calc(100svh - 640px)))}
 </style><style>
 /* label + heading on the left, the block's own text or figure on the right,
    tops flush with the label and bottoms flush with the heading */
@@ -1088,6 +1088,21 @@ section, .hero{scroll-margin-top:0}
   .track svg{max-height:29svh}
   #ch-transfer svg{max-height:29svh}
 }
+</style>
+<style>
+/* the two claims the metric earns its keep on, marked without another bold */
+.mk{
+  font-weight:600; color:var(--ink-strong); border-radius:2px;
+  /* spread instead of padding: the wash clears the words without opening a
+     gap before the punctuation that follows */
+  background:color-mix(in srgb, var(--ink-strong) 11%, transparent);
+  box-shadow:0 0 0 .2em color-mix(in srgb, var(--ink-strong) 11%, transparent);
+  box-decoration-break:clone; -webkit-box-decoration-break:clone;
+}
+.mk2{font-weight:700; color:var(--ink-strong)}
+.metric-cite{margin:.3rem 0 0; font-size:var(--f-xs); color:var(--muted)}
+.metric-cite a{color:inherit; text-decoration-color:var(--rule)}
+.metric-cite a:hover{color:var(--hover)}
 </style>
 <style>
 .mfig-root{display:block; width:100%; height:auto; font-family:var(--serif,Palatino,"Palatino Linotype",Georgia,serif)}
@@ -1541,9 +1556,10 @@ section, .hero{scroll-margin-top:0}
           </div>
           <dl class="metric-list">
             <div><dt>Specificity</dt><dd>how close a skill is to the tasks it most resembles</dd></div>
-            <div><dt>Abstractness</dt><dd>how evenly its relevance spreads over tasks</dd></div>
+            <div><dt>Abstractness</dt><dd>how evenly its relevance spreads over many tasks</dd></div>
           </dl>
-          <p class="metric-note">Computed from the skills and task descriptions alone, with no task execution, and it predicts task success.</p>
+          <p class="metric-note">Computed from the skills and task descriptions alone, with <span class="mk">no task execution</span>, and it <span class="mk2">predicts task success</span>.</p>
+          <p class="metric-cite">See <a href="https://arxiv.org/abs/2608.20274">the paper</a> for the exact definition of each dimension.</p>
         </div>
       </div>
     </div>
